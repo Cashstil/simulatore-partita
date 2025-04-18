@@ -6,6 +6,7 @@
 </head>
 <body>
   <h2>Partita in Corso</h2>
+  <div id="minutoCorrente" style="margin-bottom: 10px; font-weight: bold;">Minuto: 1'</div>
   <div id="team1"></div> <strong id="score">0 - 0</strong> <div id="team2"></div>
   <div id="log" style="height:200px;overflow:auto;border:1px solid #ccc;"></div>
   <div id="stats"></div>
@@ -94,6 +95,7 @@
 
         score.innerText = `${gol1} - ${gol2}`;
         minuto++;
+        document.getElementById("minutoCorrente").innerText = `Minuto: ${minuto}'`;
       }, 60000);
     }
   </script>
