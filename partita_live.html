@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <title>Partita in Corso</title>
+</head>
+<body>
+  <h2>Partita in Corso</h2>
+  <div id="team1"></div> <strong id="score">0 - 0</strong> <div id="team2"></div>
+  <div id="log" style="height:200px;overflow:auto;border:1px solid #ccc;"></div>
+  <div id="stats"></div>
+
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const team1 = urlParams.get('team1');
+    const team2 = urlParams.get('team2');
+    document.getElementById('team1').innerText = team1;
+    document.getElementById('team2').innerText = team2;
+
+    let data;
+    fetch('squadre.json')
+      .then(res => res.json())
+      .then(json => {
+        data = json;
+        startMatch();
+      });
+
+    function scegliGiocatore(squadra, ruolo) {
+      const g = data[squadra].giocatori.filter(x => x.ruolo === ruolo);
+      return g.length > 0 ? g[Math.floor(Math.random() * g.length)].nome : 'Giocatore';
+    }
+
+    function getEvento(minuto, squadra) {
+      const tipoEvento = Math.random();
+      let tipo = "altro", testo = "";
+
+      if (tipoEvento < 0.15) {
+        tipo = "gol";
+        const att = scegliGiocatore(squadra, 'Attaccante');
+        const cen = scegliGiocatore(squadra, 'Centrocampista');
+        testo = `${minuto}' GOOOOL! ${att} insacca su assist di ${cen}!`;
+      } else if (tipoEvento < 0.4) {
+        tipo = "tiro";
+        const att = scegliGiocatore(squadra, 'Attaccante');
+        testo = `${minuto}' ${att} ci prova da fuori area... palla alta!`;
+      } else if (tipoEvento < 0.55) {
+        tipo = "ammonizione";
+        const dif = scegliGiocatore(squadra, 'Difensore');
+        testo = `${minuto}' Fallo di ${dif}, l'arbitro estrae il cartellino giallo!`;
+      } else {
+        const cen = scegliGiocatore(squadra, 'Centrocampista');
+        testo = `${minuto}' ${cen} prova ad impostare, ma l'azione sfuma.`;
+      }
+
+      return { tipo, testo };
+    }
+
+    function startMatch() {
+      let gol1 = 0, gol2 = 0, tiri1 = 0, tiri2 = 0, amm1 = 0, amm2 = 0, p1 = 0, p2 = 0;
+      const log = document.getElementById("log");
+      const score = document.getElementById("score");
+      const stats = document.getElementById("stats");
+      let minuto = 1;
+
+      const intervallo = setInterval(() => {
+        if (minuto > 90) {
+          clearInterval(intervallo);
+          const totale = p1 + p2;
+          stats.innerHTML = `
+            <strong>STATISTICHE FINALI</strong><br>
+            Tiri: ${team1} ${tiri1} - ${tiri2} ${team2}<br>
+            Ammonizioni: ${team1} ${amm1} - ${amm2} ${team2}<br>
+            Possesso: ${team1} ${Math.round((p1 / totale) * 100)}% - ${Math.round((p2 / totale) * 100)}% ${team2}
+          `;
+          return;
+        }
+
+        const squadra = Math.random() < 0.5 ? team1 : team2;
+        const evento = getEvento(minuto, squadra);
+        const riga = document.createElement("div");
+        riga.innerHTML = evento.testo;
+        log.appendChild(riga);
+        log.scrollTop = log.scrollHeight;
+
+        if (evento.tipo === "gol") {
+          if (squadra === team1) gol1++; else gol2++;
+          if (squadra === team1) tiri1++; else tiri2++;
+        } else if (evento.tipo === "tiro") {
+          if (squadra === team1) tiri1++; else tiri2++;
+        } else if (evento.tipo === "ammonizione") {
+          if (squadra === team1) amm1++; else amm2++;
+        }
+        if (squadra === team1) p1++; else p2++;
+
+        score.innerText = `${gol1} - ${gol2}`;
+        minuto++;
+      }, 60000);
+    }
+  </script>
+</body>
+</html>

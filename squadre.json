@@ -1,0 +1,18 @@
+{
+  "AlèBurdel": {
+    "giocatori": [
+      { "nome": "Cavalieri", "ruolo": "Attaccante", "overall": 78 },
+      { "nome": "Di Punzio", "ruolo": "Centrocampista", "overall": 72 },
+      { "nome": "Padula", "ruolo": "Difensore", "overall": 70 },
+      { "nome": "Tursi", "ruolo": "Portiere", "overall": 68 }
+    ]
+  },
+  "Gordian": {
+    "giocatori": [
+      { "nome": "Freitas", "ruolo": "Attaccante", "overall": 75 },
+      { "nome": "Centoshopik", "ruolo": "Centrocampista", "overall": 73 },
+      { "nome": "Taloci", "ruolo": "Difensore", "overall": 69 },
+      { "nome": "Zummolo", "ruolo": "Portiere", "overall": 71 }
+    ]
+  }
+}

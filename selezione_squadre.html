@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <title>Seleziona le Squadre</title>
+</head>
+<body>
+  <h2>Seleziona le Squadre</h2>
+  <select id="squadra1"></select>
+  <select id="squadra2"></select>
+  <button onclick="avviaPartita()">Avvia Partita</button>
+
+  <script>
+    let data;
+    fetch('squadre.json')
+      .then(res => res.json())
+      .then(json => {
+        data = json;
+        const squadre = Object.keys(json);
+        const select1 = document.getElementById('squadra1');
+        const select2 = document.getElementById('squadra2');
+        squadre.forEach(nome => {
+          select1.innerHTML += `<option value="${nome}">${nome}</option>`;
+          select2.innerHTML += `<option value="${nome}">${nome}</option>`;
+        });
+      });
+
+    function avviaPartita() {
+      const s1 = document.getElementById('squadra1').value;
+      const s2 = document.getElementById('squadra2').value;
+      if (s1 === s2) {
+        alert('Seleziona due squadre diverse!');
+        return;
+      }
+      window.location.href = `partita_live.html?team1=${encodeURIComponent(s1)}&team2=${encodeURIComponent(s2)}`;
+    }
+  </script>
+</body>
+</html>
